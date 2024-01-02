@@ -6,6 +6,8 @@ const ScheduleModel = require("../models/ScheduleModel");
 const DeviceModel = require("../models/DeviceModel");
 const UserModel = require("../models/UserModel");
 const RoomModel = require("../models/ClassRoomModel");
+const RoomModel = require("../models/StudentModel");
+const StudentModel = require("../models/StudentModel");
 
 
 exports.createSchedule = asyncHandler(async (req, res, next) => {
@@ -194,22 +196,16 @@ exports.getScheduleByTeacherID = asyncHandler(async (req, res, next) => {
 });
 
 exports.getScheduleByDeviceStudent = asyncHandler(async (req, res, next) => {
-    let currentDate = new Date();
     let device = await DeviceModel.findOne({ idDevice: req.params.id }).exec();
-    let student = await UserModel.findOne({ _id: device.manager }).exec();
-    arrSchedules = [];
+    let arrSchedules = [];
     try {
         const schedules = await ScheduleModel.find({
-            // startTime: {
-            //     $gte: currentDate,
-            //     // $lt: currentDate
-            // },
             idRoom: device.room
         }).populate("idSubject")
             .populate("idTeacher")
             .populate("idClass")
             .populate("idRoom");
-        
+            
         for (let idx = 0; idx < schedules.length; idx++) {
             for(let i = 0; i < schedules[idx].idClass.members.length; i++){
                 if(device.manager.equals(schedules[idx].idClass.members[i])){
@@ -217,23 +213,21 @@ exports.getScheduleByDeviceStudent = asyncHandler(async (req, res, next) => {
                 }
             }
         }
-        // console.log(arrSchedules);
+        console.log(arrSchedules);
         data = [];
         let scheduleTemp = {};
         for (let i = 0; i < arrSchedules.length; i++) {
             scheduleTemp["idSubject"] = arrSchedules[i].idSubject.idSubject;
             scheduleTemp["nameSubject"] = arrSchedules[i].idSubject.nameSubject;
-            scheduleTemp["idTeacher"] = arrSchedules[i].idTeacher.username;
-            scheduleTemp["nameTeacher"] = arrSchedules[i].idTeacher.fullname;
+            scheduleTemp["idStudent"] = arrSchedules[i].idTeacher.username;
+            scheduleTemp["nameStudent"] = arrSchedules[i].idTeacher.fullname;
             scheduleTemp["idClass"] = arrSchedules[i].idClass.classID;
             scheduleTemp["nameClass"] = arrSchedules[i].idClass.nameClass;
             scheduleTemp["idRoom"] = arrSchedules[i].idRoom.idRoom;
             scheduleTemp["nameRoom"] = arrSchedules[i].idRoom.nameRoom;
             scheduleTemp["startTime"] = arrSchedules[i].startTime;
             scheduleTemp["endTime"] = arrSchedules[i].endTime;
-            scheduleTemp["imgurl"] = student.faces;
-            scheduleTemp["nameStudent"] = student.fullname;
-            scheduleTemp["idStudent"] = student.username;
+            scheduleTemp["imgurl"] = arrSchedules[i].idStudent.faces;
             data.push(scheduleTemp);
             scheduleTemp = {};
         }

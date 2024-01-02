@@ -1,4 +1,4 @@
-GET http://127.0.0.1:4024/api/v1/students/student1
+GET http://54.169.246.214:4024/api/v1/schedule/student/devices/J9N0CX05Y899361
 Content-Type: application/json
 
 {

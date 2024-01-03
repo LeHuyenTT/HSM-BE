@@ -6,7 +6,6 @@ const ScheduleModel = require("../models/ScheduleModel");
 const DeviceModel = require("../models/DeviceModel");
 const UserModel = require("../models/UserModel");
 const RoomModel = require("../models/ClassRoomModel");
-const StudentModel = require("../models/StudentModel");
 
 
 exports.createSchedule = asyncHandler(async (req, res, next) => {
@@ -108,12 +107,8 @@ exports.getScheduleByTeacher = asyncHandler(async (req, res, next) => {
             _idTeacher = gv._id;
         }
 
-        let currentDate = new Date();
         const schedules = await ScheduleModel.find(
             {
-                // startTime: {
-                //     $gte: currentDate,
-                // },
                 idTeacher: _idTeacher
             }).populate("idSubject")
             .populate("idClass")
@@ -194,6 +189,8 @@ exports.getScheduleByTeacherID = asyncHandler(async (req, res, next) => {
     }
 });
 
+//Student
+
 exports.getScheduleByDeviceStudent = asyncHandler(async (req, res, next) => {
     let device = await DeviceModel.findOne({ idDevice: req.params.id }).exec();
     let arrSchedules = [];
@@ -240,16 +237,24 @@ exports.getScheduleByDeviceStudent = asyncHandler(async (req, res, next) => {
     }
 });
 
+const StudentModel = require("../models/StudentModel");
 exports.getScheduleByStudent = asyncHandler(async (req, res, next) => {
     try {
         _idStudent = req.params.id;
         if (_idStudent.length == 8) {
-            hs = await UserModel.findOne({ username: _idStudent }).exec();
+            hs = await StudentModel.findOne({ username: _idStudent }).exec();
             _idStudent = hs._id;
         }
         let arrSchedules = [];
         let device = await DeviceModel.findOne({ manager: _idStudent }).exec();
-        let room = await RoomModel.findOne({ _id: device.room }).exec();
+        
+        let room = null;
+        if (device && device.room) {
+            room = await RoomModel.findOne({ _id: device.room }).exec();
+        } 
+        else {
+            console.error('Device is null or does not have the "room" property.');
+        }
         let schedules = await ScheduleModel.find({
             idRoom: room._id
         }).populate("idSubject")

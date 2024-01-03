@@ -51,10 +51,6 @@ const authRoutes = require("./Apps/routes/AuthRoute");
 const parentRoutes = require("./Apps/routes/ParentRoute");
 const studentRoutes = require("./Apps/routes/StudentRoute");
 
-const NotiModel = require("./Apps/models/NotiModel");
-const UserModel = require("./Apps/models/UserModel");
-
-
 // init Epress App
 const app = express();
 
@@ -128,6 +124,8 @@ const onConnection = (socket) => {
     setOnline(socket.deviceId);
     setIP(socket, socket.deviceId)
 
+    const StudentModel = require("./Apps/models/StudentModel");
+    const NotiModel = require("./Apps/models/NotiModel");
     socket.on("notifications", async (data) => {
         [userId, content] = data.split('_');
 
@@ -138,7 +136,7 @@ const onConnection = (socket) => {
             isRead: false
         }
 
-        us = await UserModel.findOne({ userID: userId });
+        us = await StudentModel.findOne({ userID: userId });
 
         NotiModel.findOne({ user: us._id }).then((docs) => {
             if (docs) {
@@ -202,11 +200,11 @@ const onConnection = (socket) => {
         topic = `${classid}:status`;
         content = `${userid}_${type}`;
         if(type == "joinclass"){
-            _user = await UserModel.findOne({ userID: userid });
+            _user = await StudentModel.findOne({ userID: userid });
             _user["inClass"] = "online";
             await _user.save();
         }else if(type == "leaveclass"){
-            _user = await UserModel.findOne({ userID: userid });
+            _user = await StudentModel.findOne({ userID: userid });
             _user["inClass"] = "offline";
             await _user.save();
         }

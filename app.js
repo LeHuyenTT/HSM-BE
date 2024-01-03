@@ -78,7 +78,7 @@ app.use(express.static(path.join(__dirname, "Apps/public")));
 const versionOne = (routeName) => `/api/v1/${routeName}`;
 
 // register routes
-app.use(versionOne("user"), userRoutes);
+app.use(versionOne("users"), userRoutes);
 app.use(versionOne("student"), studentRoutes);
 app.use(versionOne("assign"), assignRoutes);
 app.use(versionOne("attendance"), attendanceRoutes);

@@ -39,9 +39,8 @@ exports.getAllSchedules = asyncHandler(async (req, res, next) => {
     }
 });
 
-exports.getAllScheduleByDevice = asyncHandler(async (req, res, next) => {
+exports.getScheduleByDeviceTeacher = asyncHandler(async (req, res, next) => {
 
-    let currentDate = new Date();
 
     let device = await DeviceModel.findOne({ idDevice: req.params.id }).exec();
     try {
@@ -201,31 +200,36 @@ exports.getScheduleByDeviceStudent = asyncHandler(async (req, res, next) => {
             .populate("idTeacher")
             .populate("idClass")
             .populate("idRoom");
-            
+        let index = [];
         for (let idx = 0; idx < schedules.length; idx++) {
             for(let i = 0; i < schedules[idx].idClass.members.length; i++){
                 if(device.manager.equals(schedules[idx].idClass.members[i])){
                     arrSchedules.push(schedules[idx]);
+                    index.push(i);
                 }
             }
         }
+        index.reverse();
         console.log(arrSchedules);
         data = [];
         let scheduleTemp = {};
-        for (let i = 0; i < arrSchedules.length; i++) {
-            scheduleTemp["idSubject"] = arrSchedules[i].idSubject.idSubject;
-            scheduleTemp["nameSubject"] = arrSchedules[i].idSubject.nameSubject;
-            scheduleTemp["idStudent"] = arrSchedules[i].idTeacher.username;
-            scheduleTemp["nameStudent"] = arrSchedules[i].idTeacher.fullname;
-            scheduleTemp["idClass"] = arrSchedules[i].idClass.classID;
-            scheduleTemp["nameClass"] = arrSchedules[i].idClass.nameClass;
-            scheduleTemp["idRoom"] = arrSchedules[i].idRoom.idRoom;
-            scheduleTemp["nameRoom"] = arrSchedules[i].idRoom.nameRoom;
-            scheduleTemp["startTime"] = arrSchedules[i].startTime;
-            scheduleTemp["endTime"] = arrSchedules[i].endTime;
-            scheduleTemp["imgurl"] = arrSchedules[i].idStudent.faces;
-            data.push(scheduleTemp);
-            scheduleTemp = {};
+        if(arrSchedules.length > 0){
+            let student = await StudentModel.findOne({ _id: arrSchedules[0].idClass.members[index.pop()] }).exec();
+            for (let i = 0; i < arrSchedules.length; i++) {
+                scheduleTemp["idSubject"] = arrSchedules[i].idSubject.idSubject;
+                scheduleTemp["nameSubject"] = arrSchedules[i].idSubject.nameSubject;
+                scheduleTemp["idStudent"] = student.userID;
+                scheduleTemp["nameStudent"] = student.fullname;
+                scheduleTemp["idClass"] = arrSchedules[i].idClass.classID;
+                scheduleTemp["nameClass"] = arrSchedules[i].idClass.nameClass;
+                scheduleTemp["idRoom"] = arrSchedules[i].idRoom.idRoom;
+                scheduleTemp["nameRoom"] = arrSchedules[i].idRoom.nameRoom;
+                scheduleTemp["startTime"] = arrSchedules[i].startTime;
+                scheduleTemp["endTime"] = arrSchedules[i].endTime;
+                scheduleTemp["imgurl"] = student.faces;
+                data.push(scheduleTemp);
+                scheduleTemp = {};
+            }
         }
         // console.log(data);
         res.status(200).json({

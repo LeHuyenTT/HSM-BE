@@ -4,7 +4,7 @@ const router = express.Router();
 const {
     createSchedule,
     getAllSchedules,
-    getAllScheduleByDevice,
+    getScheduleByDeviceTeacher,
     getScheduleByTeacher,
     getScheduleByTeacherID,
     getScheduleByDeviceStudent,
@@ -12,7 +12,7 @@ const {
 } = require("../controllers/ScheduleController");
 
 router.route("/").post(createSchedule).get(getAllSchedules);
-router.route("/devices/:id").get(getAllScheduleByDevice);
+router.route("/teacher/devices/:id").get(getScheduleByDeviceTeacher);
 router.route("/teacher/:id").get(getScheduleByTeacher);
 router.route("/cus/teacher/:id").get(getScheduleByTeacherID);
 router.route("/student/devices/:id").get(getScheduleByDeviceStudent);

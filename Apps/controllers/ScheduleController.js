@@ -6,7 +6,6 @@ const ScheduleModel = require("../models/ScheduleModel");
 const DeviceModel = require("../models/DeviceModel");
 const UserModel = require("../models/UserModel");
 const RoomModel = require("../models/ClassRoomModel");
-const RoomModel = require("../models/StudentModel");
 const StudentModel = require("../models/StudentModel");
 
 

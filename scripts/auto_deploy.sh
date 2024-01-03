@@ -12,7 +12,7 @@ fi
 # Enable `npm` and set Node.js version
 source ~/.nvm/nvm.sh
 
-URL_REPO="https://github.com/duongtt1/HSM-BE.git"
+URL_REPO="https://github.com/LeHuyenTT/HSM-BE.git"
 DIR_REPO="$HOME/repo"
 APP_NAME="HSMBE"
 MAIN_SCRIPT="app.js"

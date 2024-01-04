@@ -12,12 +12,12 @@ const {
     updateAssign,
     getAssignByAuthorMdw,
     getAllMemberAssign,
-    getAssignByID,
+    getAssignByIdAssign,
     storeResultAssignByID
 } = require("../controllers/AssignController");
 
 router.route("/").post(createAssign).get(getAllAssign);
-router.get('/:id', getAssignByID)
+router.get('/:id', getAssignByIdAssign)
 router.get('/author/:id', getAssignByAuthorMdw, getAssign)
 router.delete('/:id', getAssignMdw, deleteAssign)
 router.get('/members/:id', getAllMemberAssign)

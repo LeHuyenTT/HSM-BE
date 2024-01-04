@@ -4,6 +4,7 @@ const ErrorResponse = require("../utils/errorResponse");
 //! Models
 const DocsModel = require("../models/DocsModel");
 const UserModel = require("../models/UserModel");
+const ClassModel = require("../models/ClassModel");
 
 exports.createDoc = asyncHandler(async (req, res, next) => {
     try {
@@ -65,18 +66,27 @@ exports.updateDoc = asyncHandler(async (req, res, next) => {
 
 // Middleware function to get a single user by ID
 exports.getDocMdw = asyncHandler(async (req, res, next) => {
-    let doc;
     try {
-        doc = await DocsModel.findById(req.params.id);
-        if (doc == null) {
-            return res.status(404).json({ success: false, message: 'Cannot find user' });
+        const classes = await ClassModel.findOne({ classID: req.params.id }).exec();
+        if (!classes) {
+            return res.status(404).json({ success: false, message: 'Cannot find class' });
         }
+
+        const docs = await DocsModel.find({ _id: { $in: classes.docs } }).exec();
+        if (docs.length === 0) {
+            return res.status(404).json({ success: false, message: 'No documents found for the class' });
+        }
+
+        res.status(200).json({
+            success: true,
+            data: docs
+        });
     } catch (err) {
-        return res.status(500).json({ success: false, message: 'Cannot find user' });
+        console.error(err);
+        return res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
-    res.doc = doc;
-    next();
 });
+
 
 exports.getDocByAuthorMdw = asyncHandler(async (req, res, next) => {
     let doc;
@@ -86,11 +96,13 @@ exports.getDocByAuthorMdw = asyncHandler(async (req, res, next) => {
         if (doc == null) {
             return res.status(404).json({ success: false, message: 'Cannot find user' });
         }
+        res.status(200).json({
+            success: true,
+            data: doc
+        });
     } catch (err) {
         return res.status(500).json({ success: false, message: 'Cannot find user' });
     }
-    res.doc = doc;
-    next();
 });
 
 

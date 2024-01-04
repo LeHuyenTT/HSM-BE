@@ -54,11 +54,12 @@ exports.getScheduleByDeviceTeacher = asyncHandler(async (req, res, next) => {
             .populate("idTeacher")
             .populate("idClass")
             .populate("idRoom");
+
         data = [];
         let scheduleTemp = {};
         for (let i = 0; i < schedules.length; i++) {
-            scheduleTemp["idSubject"] = schedules[i].idSubject.idSubject;
-            scheduleTemp["nameSubject"] = schedules[i].idSubject.nameSubject;
+            // scheduleTemp["idSubject"] = schedules[i].idSubject.idSubject;
+            // scheduleTemp["nameSubject"] = schedules[i].idSubject.nameSubject;
             scheduleTemp["idTeacher"] = schedules[i].idTeacher.username;
             scheduleTemp["nameTeacher"] = schedules[i].idTeacher.fullname;
             scheduleTemp["idClass"] = schedules[i].idClass.classID;
@@ -67,6 +68,8 @@ exports.getScheduleByDeviceTeacher = asyncHandler(async (req, res, next) => {
             scheduleTemp["nameRoom"] = schedules[i].idRoom.nameRoom;
             scheduleTemp["startTime"] = schedules[i].startTime;
             scheduleTemp["endTime"] = schedules[i].endTime;
+            let assign = await AssignModel.findOne({_id: schedules[i].idClass.assigns[0]}).exec();
+            scheduleTemp["assign"] = assign.idAssign;
             scheduleTemp["imgurl"] = schedules[i].idTeacher.faces;
             data.push(scheduleTemp);
             scheduleTemp = {};
@@ -216,8 +219,10 @@ exports.getScheduleByDeviceStudent = asyncHandler(async (req, res, next) => {
         if(arrSchedules.length > 0){
             let student = await StudentModel.findOne({ _id: arrSchedules[0].idClass.members[index.pop()] }).exec();
             for (let i = 0; i < arrSchedules.length; i++) {
-                scheduleTemp["idSubject"] = arrSchedules[i].idSubject.idSubject;
-                scheduleTemp["nameSubject"] = arrSchedules[i].idSubject.nameSubject;
+                // scheduleTemp["idSubject"] = arrSchedules[i].idSubject.idSubject;
+                // scheduleTemp["nameSubject"] = arrSchedules[i].idSubject.nameSubject;
+                scheduleTemp["idTeacher"] = arrSchedules[i].idTeacher.userID;
+                scheduleTemp["nameTeacher"] = arrSchedules[i].idTeacher.fullname;
                 scheduleTemp["idStudent"] = student.userID;
                 scheduleTemp["nameStudent"] = student.fullname;
                 scheduleTemp["idClass"] = arrSchedules[i].idClass.classID;
@@ -226,6 +231,8 @@ exports.getScheduleByDeviceStudent = asyncHandler(async (req, res, next) => {
                 scheduleTemp["nameRoom"] = arrSchedules[i].idRoom.nameRoom;
                 scheduleTemp["startTime"] = arrSchedules[i].startTime;
                 scheduleTemp["endTime"] = arrSchedules[i].endTime;
+                let assign = await AssignModel.findOne({_id: arrSchedules[i].idClass.assigns[0]}).exec();
+                scheduleTemp["assign"] = assign.idAssign;
                 scheduleTemp["imgurl"] = student.faces;
                 data.push(scheduleTemp);
                 scheduleTemp = {};
@@ -242,6 +249,7 @@ exports.getScheduleByDeviceStudent = asyncHandler(async (req, res, next) => {
 });
 
 const StudentModel = require("../models/StudentModel");
+const AssignModel = require("../models/AssignModel");
 exports.getScheduleByStudent = asyncHandler(async (req, res, next) => {
     try {
         _idStudent = req.params.id;

@@ -1,4 +1,5 @@
 const UserModel = require("../../models/UserModel");
+const StudentModel = require("../../models/StudentModel");
 const axios = require("axios")
 
 module.exports = () => {
@@ -7,6 +8,7 @@ module.exports = () => {
         updateFields["status"] = "online";
         // updateFields["ip"] = "online";
         await UserModel.updateOne({ username: token }, { $set: updateFields });
+        await StudentModel.updateOne({ username: token }, { $set: updateFields });
         // const updatedUser = await UserModel.findOne({ username: token });
     };
 
@@ -18,6 +20,7 @@ module.exports = () => {
         socket.userip = __reponse.data.ip;
         // console.log(socket.handshake.address)
         await UserModel.updateOne({ username: token }, { $set: updateFields });
+        await StudentModel.updateOne({ username: token }, { $set: updateFields });
     };
 
     const setOffline = async function (token) {
@@ -26,6 +29,7 @@ module.exports = () => {
         updateFields["deviceLogin"] = "offline";
         updateFields["inClass"] = "offline";
         await UserModel.updateOne({ username: token }, { $set: updateFields });
+        await StudentModel.updateOne({ username: token }, { $set: updateFields });
         // console.log("update offline");
         
         // const updatedUser = await UserModel.findOne({ username: token });

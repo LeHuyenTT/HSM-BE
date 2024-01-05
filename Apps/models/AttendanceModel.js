@@ -5,7 +5,7 @@ var AttendanceModel = new Schema({
 	student: { 
 		type: Schema.Types.ObjectId, 
 		required: true, 
-		ref: "UserModel" 
+		ref: "StudentModel" 
 	},
 	class: { 
 		type: Schema.Types.ObjectId, 

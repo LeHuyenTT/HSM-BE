@@ -13,7 +13,7 @@ var ClassModel = new Schema({
 	},
 	members: [{
 		type: Schema.Types.ObjectId,
-		ref: "UserModel",
+		ref: "StudentModel",
 		required: true,
 		unique: true
 	}],

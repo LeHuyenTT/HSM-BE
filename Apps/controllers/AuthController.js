@@ -3,6 +3,7 @@ const ErrorResponse = require("../utils/errorResponse");
 
 //! Models
 const UserModel = require("../models/UserModel");
+const StudentModel = require("../models/StudentModel");
 
 exports.login = asyncHandler(async (req, res, next) => {
     try {
@@ -28,7 +29,7 @@ exports.studentLogin = asyncHandler(async (req, res, next) => {
         password = req.body.password;
         deviceLogin = req.body.deviceLogin;
         // console.log(req.body.deviceLogin)
-        user = await UserModel.findOne({ username: username, password: password, role: "student" });
+        user = await StudentModel.findOne({ username: username, password: password, role: "student" });
         // console.log(user);
         user.deviceLogin = deviceLogin;
         await user.save();

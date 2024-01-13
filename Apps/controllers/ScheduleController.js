@@ -177,6 +177,7 @@ exports.getScheduleByTeacherID = asyncHandler(async (req, res, next) => {
             scheduleTemp["nameTeacher"] = schedules[i].idTeacher.fullname;
             scheduleTemp["startTime"] = schedules[i].startTime.toISOString().slice(11, 16);
             scheduleTemp["endTime"] = schedules[i].endTime.toISOString().slice(11, 16);
+            scheduleTemp["fullDay"] = schedules[i].endTime.toISOString().slice(0, 10);
             scheduleTemp["day"] = getDayOfWeek(schedules[i].startTime);
             data.push(scheduleTemp);
             scheduleTemp = {};
@@ -291,6 +292,7 @@ exports.getScheduleByStudent = asyncHandler(async (req, res, next) => {
             scheduleTemp["startTime"] = arrSchedules[i].startTime.toISOString().slice(11, 16);
             scheduleTemp["endTime"] = arrSchedules[i].endTime.toISOString().slice(11, 16);
             scheduleTemp["day"] = getDayOfWeek(arrSchedules[i].startTime);
+            scheduleTemp["fullDay"] = schedules[i].endTime.toISOString().slice(0, 10);
             data.push(scheduleTemp);
             scheduleTemp = {};
         }

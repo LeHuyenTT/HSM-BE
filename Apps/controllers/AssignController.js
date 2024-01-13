@@ -129,6 +129,21 @@ exports.getAssignByIdAssign = asyncHandler(async (req, res, next) => {
     }
 });
 
+exports.getAssignByIdAssignment = asyncHandler(async (req, res, next) => {
+
+    try {
+        const assigns = await AssignModel.find({idAssign: req.params.id}).exec();
+        if (assigns){
+            res.status(200).json({
+                success: true,
+                data: assigns
+            });
+        }
+    } catch (err) {
+        res.status(400).json({ success: false, message: err.message });
+    }
+});
+
 exports.storeResultAssignByID = asyncHandler(async (req, res, next) => {
     try {
         var point = 0;

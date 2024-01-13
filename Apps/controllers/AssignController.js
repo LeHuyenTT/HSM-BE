@@ -114,8 +114,10 @@ exports.getAllMemberAssign = asyncHandler(async (req, res, next) => {
 
 
 exports.getAssignByIdAssign = asyncHandler(async (req, res, next) => {
+    
     try {
-        const assigns = await AssignModel.find({idAssign: req.params.id}).exec();
+        const classes = await ClassModel.findOne({classID: req.params.id}).populate('idclass');
+        const assigns = await AssignModel.find({_id: classes.assigns[0]}).exec();
         if (assigns){
             res.status(200).json({
                 success: true,

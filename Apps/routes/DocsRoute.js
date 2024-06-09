@@ -18,6 +18,6 @@ router.get('/:id', getDocMdw)
 router.get('/author/:id', getDocByAuthorMdw)
 router.delete('/:id', getDocMdw, deleteDoc)
 
-router.put('/:id', getDocMdw, updateDoc);
+router.put('/:id', getDocByAuthorMdw, updateDoc);
 
 module.exports = router;

@@ -254,6 +254,24 @@ const onConnection = (socket) => {
         }
     })
 
+    socket.on('noti:doc:start', async (data) => {
+        // KTMT0001_AS0001
+        [idClass, idAssign] = data.split('_');
+        __class = await ClassModel.findOne({classID: idClass}).populate("members");
+        listIdStudent = []
+        temp = {}
+        for (let i = 0; i < __class.members.length; i++) {
+            if(__class.members[i].role == "student"){
+                listIdStudent.push(__class.members[i].username);
+            }
+        }
+
+        for (let idx = 0; idx < listIdStudent.length; idx++) {
+            topic = `${idClass}:${listIdStudent[idx]}:doc:start`
+            io.emit(topic, idAssign)
+        }
+    })
+
     socket.on("assign:ctrl", async (data) => {
         try {
             [assignid, type] = data.split('_');

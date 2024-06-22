@@ -12,7 +12,7 @@ var AssignModel = new Schema({
 		ref: "UserModel"
 	},
 	time: { type: Number, required: true, default: Date.now() },
-	type: { type: String, enum: ["MC", "PDF"], default: "MC", required: true },
+	type: { type: String, enum: ["MC", "PDF", "CR"], default: "MC", required: true },
 	doned: { type: Boolean, default: false },
 	quetions: [
 		{

@@ -94,7 +94,7 @@ exports.getDocByAuthorMdw = asyncHandler(async (req, res, next) => {
         user = await UserModel.findOne({username: req.params.id})
         doc = await DocsModel.find({author: user._id});
         if (doc == null) {
-            return res.status(404).json({ success: false, message: 'Cannot find user' });
+            return res.status(404).json({ success: false, message: 'Cannot find doc' });
         }
         res.status(200).json({
             success: true,

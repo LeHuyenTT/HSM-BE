@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 var QuetionModel = new Schema({
 	idQuetion: { type: String, required: true, unique: true },
-	type: { type: String, enum: ["MC", "PDF"], default: "MC", required: true },
+	type: { type: String, enum: ["MC", "PDF", "CR"], default: "MC", required: true },
 	content: { type: String, required: true },
 	correctAnswer: { type: String },
 	answers: {
